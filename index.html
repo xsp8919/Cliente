@@ -88,11 +88,9 @@
         .logo-sub { font-size: 0.7rem; color: var(--text-muted); display: block; }
         .header-badge { background: var(--primary-light); color: var(--primary); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
 
-        /* ============ BOTÓN HISTORIA ============ */
         .btn-historia { background: var(--primary-light); color: var(--primary); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; transition: var(--transition); }
         .btn-historia:hover { background: var(--primary); color: white; }
 
-        /* ============ MODAL HISTORIA ============ */
         .historia-modal { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
         .historia-modal.active { display: flex; }
         .historia-content { background: var(--surface); border-radius: var(--radius); padding: 2rem; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-lg); text-align: left; animation: fadeInModal 0.3s ease; }
@@ -101,13 +99,11 @@
         .historia-content p { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem; opacity: 0.88; }
         .historia-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 0.4rem; }
 
-        /* ============ HERO ============ */
         .hero-strip { text-align: center; padding: 1.8rem 1.5rem 1rem; background: linear-gradient(180deg, #fff5f6 0%, var(--bg-color) 100%); }
         .hero-strip h2 { font-size: 1.6rem; font-weight: 700; }
         .hero-strip p { color: var(--text-muted); font-size: 0.9rem; max-width: 500px; margin: 0 auto; }
         .aviso { display: inline-block; margin-top: 0.7rem; background: #fef3c7; color: #92400e; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.78rem; }
 
-        /* ============ BOTÓN DE COMPARTIR EN HERO ============ */
         .btn-hero-share {
             display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem;
             background: var(--surface); color: var(--primary); border: 1.5px solid var(--primary);
@@ -116,22 +112,17 @@
         }
         .btn-hero-share:hover { background: var(--primary); color: white; }
 
-        /* ============ SPLASH SCREEN ============ */
         .splash-screen {
             position: fixed; inset: 0; background: var(--bg-color); z-index: 99999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             gap: 1rem; transition: opacity 0.6s ease, visibility 0.6s ease;
         }
         .splash-screen.fade-out { opacity: 0; visibility: hidden; }
-        .splash-logo {
-            width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
-            box-shadow: var(--shadow-md); animation: pulseLogo 1.8s infinite ease-in-out;
-        }
+        .splash-logo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; box-shadow: var(--shadow-md); animation: pulseLogo 1.8s infinite ease-in-out; }
         .splash-title { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
         .splash-sub { font-size: 0.9rem; color: var(--text-muted); font-style: italic; }
         @keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.85; } }
 
-        /* ============ SEARCH ============ */
         .search-container { padding: 0 1.5rem 1rem; max-width: 600px; margin: 0 auto; }
         .search-input {
             width: 100%; padding: 0.9rem 1.2rem 0.9rem 2.8rem; border: 2px solid var(--border); border-radius: 30px;
@@ -140,12 +131,10 @@
         }
         .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(217,119,127,0.1); }
 
-        /* ============ GRID ============ */
         .catalog-container { padding: 0.5rem 1.5rem 2rem; max-width: 1100px; margin: 0 auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.5rem; }
         @media (max-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.9rem; } .catalog-container { padding: 0.5rem 0.8rem 2rem; } }
 
-        /* ============ CARD ============ */
         .card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); transition: var(--transition); display: flex; flex-direction: column; overflow: hidden; }
         .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
         .card-img-container { width: 100%; height: 180px; overflow: hidden; background: #fce4e6; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
@@ -163,7 +152,6 @@
         .size-btn:hover { border-color: var(--primary); background: #fff5f6; }
         .size-price { font-weight: 700; color: var(--primary); font-size: 1rem; }
 
-        /* ============ FAB CARRITO ============ */
         .fab-cart { position: fixed; bottom: 24px; right: 24px; z-index: 60; background: var(--primary); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; box-shadow: 0 8px 24px rgba(217,119,127,0.45); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
         .fab-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; min-width: 24px; height: 24px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
@@ -177,10 +165,10 @@
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
             background: var(--surface); border-radius: 20px 20px 0 0;
             box-shadow: 0 -8px 30px rgba(0,0,0,0.15); max-height: 85vh;
-            display: block !important; /* Quita el flex para permitir el flujo natural de scroll */
-            overflow-y: auto !important; /* Habilita scroll en todo el panel */
-            -webkit-overflow-scrolling: touch; /* Obliga a iOS a usar scroll suave/fluido */
-            overscroll-behavior: contain; /* Evita que la página de fondo se mueva */
+            display: block !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
             transform: translateY(100%);
             transition: transform 0.35s;
             padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -191,18 +179,11 @@
         }
         .cart-handle { width: 40px; height: 4px; background: #d1d5db; border-radius: 2px; margin: 0.8rem auto 0.3rem; }
         .cart-header {
-            position: sticky;
-            top: 0;
-            background: var(--surface);
-            z-index: 20;
-            /* Sombra sutil para cuando el contenido pase por debajo */
+            position: sticky; top: 0; background: var(--surface); z-index: 20;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
             display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.5rem; border-bottom: 1px solid var(--border);
         }
-        .cart-body {
-            overflow-y: visible !important; /* Desactiva el scroll interno que causaba el bloqueo */
-            padding: 1rem 1.5rem;
-        }
+        .cart-body { overflow-y: visible !important; padding: 1rem 1.5rem; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px dashed #e5e7eb; gap: 0.8rem; }
         .cart-item-info { flex: 1; min-width: 0; }
         .cart-item-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
@@ -225,13 +206,11 @@
             font-size: 16px;
         }
 
-        /* ============ RADIO GROUP (MÉTODO DE PAGO) ============ */
         .radio-group { display: flex; gap: 0.5rem; margin: 0.5rem 0 1rem; flex-wrap: wrap; }
         .radio-pill { flex: 1; text-align: center; background: var(--bg-color); border: 1.5px solid var(--border); padding: 0.6rem; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
         .radio-pill:has(input:checked) { background: var(--primary-light); border-color: var(--primary); color: var(--primary); font-weight: 600; }
         .radio-pill input { display: none; }
 
-        /* ============ EXTRAS ============ */
         .extras-group { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.5rem 0 1rem; }
         .extra-checkbox { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; background: var(--bg-color); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1.5px solid var(--border); cursor: pointer; }
         .extra-checkbox input { accent-color: var(--primary); width: 16px; height: 16px; }
@@ -252,7 +231,6 @@
 </head>
 <body>
 
-    <!-- SPLASH SCREEN -->
     <div class="splash-screen" id="splash-screen">
         <img src="https://raw.githubusercontent.com/xsp8919/Cliente/f79798bfb15924aa6ba61c846773846f5e64c447/logo.jpg" alt="Azúcar y Migas Logo" class="splash-logo">
         <div class="splash-title">Azúcar y Migas</div>
@@ -295,12 +273,10 @@
 
     <div class="footer">Hecho con ❤️ <strong>Azúcar y Migas</strong> &copy; <span id="current-year"></span></div>
 
-    <!-- FAB CARRITO -->
     <button class="fab-cart" id="fab-cart">🛒<span class="fab-badge" id="fab-badge" style="display:none;">0</span></button>
 
     <div class="overlay" id="overlay"></div>
 
-    <!-- CART PANEL -->
     <div class="cart-panel" id="cart-panel">
         <div class="cart-handle"></div>
         <div class="cart-header"><h3>🛒 Tu Pedido</h3><button id="cart-close">✕</button></div>
@@ -319,17 +295,14 @@
               <label class='radio-pill'><input type='radio' name='pago' value='ATH Móvil'> ATH Móvil</label>
               <label class='radio-pill'><input type='radio' name='pago' value='Otro'> Otro</label>
             </div>
-
             <label>🎁 Extras opcionales (Upselling)</label>
             <div class='extras-group' id='extras-group'>
               <label class='extra-checkbox'><input type='checkbox' name='extra' value='Vela / Chispera' data-precio='2.50'> Vela o Chispera (+$2.50)</label>
               <label class='extra-checkbox'><input type='checkbox' name='extra' value='Topper de Acrílico' data-precio='4.00'> Topper Personalizado (+$4.00)</label>
               <label class='extra-checkbox'><input type='checkbox' name='extra' value='Caja de Regalo' data-precio='3.00'> Caja de Regalo con Lazo (+$3.00)</label>
             </div>
-
             <label>✍️ Dedicatoria o Tarjeta</label>
             <input type='text' id='cart-dedicatoria' placeholder='Ej. Feliz Cumpleaños Mamá' maxlength='40'>
-
             <button class="btn-submit btn-whatsapp-order" id="btn-submit-order">Enviar por WhatsApp</button>
             <button class="btn-submit btn-clear-cart" id="btn-clear-cart">🗑️ Vaciar carrito</button>
         </div>
@@ -338,7 +311,6 @@
     <div class="toast" id="toast"></div>
     <div class="confirm-overlay" id="confirm-overlay"><div class="confirm-box"><div style="font-size:3.5rem;">✅</div><h3 id="confirm-title"></h3><p id="confirm-msg"></p><button id="confirm-ok">Entendido</button></div></div>
 
-    <!-- MODAL HISTORIA -->
     <div class="historia-modal" id="historia-modal">
         <div class="historia-content">
             <button class="historia-close" id="historia-close">✕</button>
@@ -403,18 +375,15 @@
             const searchInput = document.getElementById('search-input');
             const historiaModal = document.getElementById('historia-modal');
 
-            // Memoria de cliente (localStorage)
             const savedNombre = localStorage.getItem('aym_client_name');
             const savedTel = localStorage.getItem('aym_client_tel');
             if(savedNombre) document.getElementById('cliente-nombre').value = savedNombre;
             if(savedTel) document.getElementById('cliente-telefono').value = savedTel;
 
-            // Lógica del modal de historia
             document.getElementById('btn-historia').onclick = () => historiaModal.classList.add('active');
             document.getElementById('historia-close').onclick = () => historiaModal.classList.remove('active');
             historiaModal.onclick = (e) => { if(e.target === historiaModal) historiaModal.classList.remove('active'); };
 
-            // Splash Screen
             window.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     const splash = document.getElementById('splash-screen');
@@ -422,7 +391,6 @@
                 }, 2000);
             });
 
-            // Compartir Catálogo por WhatsApp desde el Hero
             const btnHeroShare = document.getElementById('btn-hero-share');
             if (btnHeroShare) {
                 btnHeroShare.onclick = () => {
@@ -481,12 +449,10 @@
                 document.querySelectorAll('input[name="extra"]:checked').forEach(cb => {
                     total += parseFloat(cb.dataset.precio || 0);
                 });
-
                 const totalItems = carrito.reduce((s,i) => s + i.cantidad, 0);
                 fabBadge.style.display = totalItems > 0 ? 'flex' : 'none';
                 fabBadge.textContent = totalItems;
                 cartTotalAmount.textContent = `$${total.toFixed(2)}`;
-
                 if (carrito.length === 0 && !document.querySelector('input[name="extra"]:checked')) {
                     cartBody.innerHTML = `<div class="cart-empty"><span style="font-size:3rem;">🧁</span><br>Toca los tamaños para comenzar.</div>`;
                     cartForm.style.display = 'none';
@@ -531,12 +497,20 @@
                 input.value = v;
             };
 
-            document.getElementById('btn-submit-order').onclick = async function() {
+            // ============ ENVIAR PEDIDO CORREGIDO PARA IPHONE ============
+            document.getElementById('btn-submit-order').onclick = function() {
                 if (!carrito.length && !document.querySelector('input[name="extra"]:checked')) return mostrarToast('Agrega al menos un producto o extra');
                 const nombre = document.getElementById('cliente-nombre').value.trim().substring(0, 20);
                 const tel = document.getElementById('cliente-telefono').value.trim();
-                const fecha = document.getElementById('fecha-entrega').value;
-                if (!nombre || !tel || !fecha) return mostrarToast('Completa todos los campos obligatorios');
+                const fechaRaw = document.getElementById('fecha-entrega').value;
+                if (!nombre || !tel || !fechaRaw) return mostrarToast('Completa todos los campos obligatorios');
+
+                /* Conversión segura de YYYY-MM-DD a DD/MM/YYYY sin usar 'new Date()' para evitar bugs en iPhone */
+                let fecha = fechaRaw;
+                if (fechaRaw.includes('-')) {
+                    const partes = fechaRaw.split('-');
+                    if (partes.length === 3) fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
 
                 const metodoPago = document.querySelector('input[name="pago"]:checked')?.value || 'No especificado';
                 let total = carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
@@ -569,15 +543,17 @@
                 if(dedicatoria) mensaje += `\n✍️ *Dedicatoria:* ${dedicatoria}\n`;
                 mensaje += `\n💰 Total: $${total.toFixed(2)}\n\n✨ *Estado:* Pendiente de confirmación\n📱 _Pedido enviado desde el catálogo web_`;
 
-                if (firebaseReady && window.db) {
-                    try {
-                        const { doc, updateDoc, arrayUnion, setDoc } = window.firebaseModules;
-                        const docRef = doc(window.db, "configuracion", "estado_pos");
-                        await updateDoc(docRef, { ordenes: arrayUnion(orden) }).catch(async () => await setDoc(docRef, { ordenes: [orden] }));
-                    } catch(e) {}
-                }
+                // 1. Abrir WhatsApp inmediatamente (evita bloqueo en iOS)
+                window.open('https://wa.me/' + NEGOCIO_WHATSAPP + '?text=' + encodeURIComponent(mensaje), '_blank');
 
-                window.open('https://wa.me/'+NEGOCIO_WHATSAPP+'?text='+encodeURIComponent(mensaje), '_blank');
+                // 2. Guardar en Firebase en segundo plano
+                if (firebaseReady && window.db) {
+                    const { doc, updateDoc, arrayUnion, setDoc } = window.firebaseModules;
+                    const docRef = doc(window.db, "configuracion", "estado_pos");
+                    updateDoc(docRef, { ordenes: arrayUnion(orden) }).catch(() => {
+                        setDoc(docRef, { ordenes: [orden] }).catch(() => {});
+                    });
+                }
 
                 localStorage.setItem('aym_client_name', nombre);
                 localStorage.setItem('aym_client_tel', tel);
@@ -616,7 +592,14 @@
                 });
             });
 
-            document.getElementById('fecha-entrega').min = new Date(Date.now() + 172800000).toISOString().split('T')[0];
+            /* Cálculo de 48h 100% seguro para iOS (Tiempo Local) */
+            let fechaMin = new Date();
+            fechaMin.setDate(fechaMin.getDate() + 2);
+            let anio = fechaMin.getFullYear();
+            let mes = String(fechaMin.getMonth() + 1).padStart(2, '0');
+            let dia = String(fechaMin.getDate()).padStart(2, '0');
+            document.getElementById('fecha-entrega').min = `${anio}-${mes}-${dia}`;
+
             document.getElementById('current-year').textContent = new Date().getFullYear();
 
             window.addEventListener('scroll', () => {
