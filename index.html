@@ -152,7 +152,6 @@
         .size-btn:hover { border-color: var(--primary); background: #fff5f6; }
         .size-price { font-weight: 700; color: var(--primary); font-size: 1rem; }
 
-        /* Botón de reseñas en tarjeta */
         .review-count-btn {
             display: inline-flex; align-items: center; gap: 0.3rem;
             background: #fef3c7; border: 1px solid #fbbf24; color: #92400e;
@@ -161,7 +160,6 @@
         }
         .review-count-btn:hover { background: #fde68a; }
 
-        /* Modales de reseñas */
         .review-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150;
             display: none; align-items: center; justify-content: center;
@@ -242,9 +240,18 @@
         }
 
         .radio-group { display: flex; gap: 0.5rem; margin: 0.5rem 0 1rem; flex-wrap: wrap; }
-        .radio-pill { flex: 1; text-align: center; background: var(--bg-color); border: 1.5px solid var(--border); padding: 0.6rem; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+        .radio-pill {
+            flex: 1; text-align: center; background: var(--bg-color); border: 1.5px solid var(--border);
+            padding: 0.6rem; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+        }
         .radio-pill:has(input:checked) { background: var(--primary-light); border-color: var(--primary); color: var(--primary); font-weight: 600; }
-        .radio-pill input { display: none; }
+        .radio-pill input[type="radio"] {
+            display: inline-block; 
+            width: 16px; height: 16px;
+            accent-color: var(--primary);
+            margin: 0;
+        }
 
         .extras-group { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.5rem 0 1rem; }
         .extra-checkbox { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; background: var(--bg-color); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1.5px solid var(--border); cursor: pointer; }
@@ -338,9 +345,7 @@
           <label class='radio-pill'><input type='radio' name='pago' value='Otro'> Otro</label>
         </div>
         <label>🎁 Extras opcionales (Upselling)</label>
-        <div class='extras-group' id='extras-group'>
-            <!-- Los extras se cargarán dinámicamente desde Firebase -->
-        </div>
+        <div class='extras-group' id='extras-group'></div>
         <label>✍️ Dedicatoria o Tarjeta</label>
         <input type='text' id='cart-dedicatoria' placeholder='Ej. Feliz Cumpleaños Mamá' maxlength='40'>
         <button class="btn-submit btn-whatsapp-order" id="btn-submit-order">Enviar por WhatsApp</button>
@@ -362,7 +367,6 @@
     </div>
 </div>
 
-<!-- Modal para ver reseñas de un bizcocho -->
 <div id="review-modal" class="review-modal">
     <div class="review-modal-content">
         <button class="historia-close" id="review-close">✕</button>
@@ -372,7 +376,6 @@
     </div>
 </div>
 
-<!-- Modal para dejar una nueva reseña -->
 <div id="leave-review-modal" class="review-modal">
     <div class="review-modal-content">
         <button class="historia-close" id="leave-review-close">✕</button>
@@ -387,7 +390,6 @@
 
 <script>
 (function() {
-    // ============ CONFIGURACIÓN ============
     const NEGOCIO_WHATSAPP = '17876744838';
 
     const defaultPOS = [
@@ -405,10 +407,8 @@
     let firebaseReady = false;
     let currentBizcochoId = null;
 
-    // ============ ESCAPE HTML ============
     function escapeHTML(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // ============ REFERENCIAS DOM ============
     const catalogGrid = document.getElementById('catalog-grid');
     const cartBody = document.getElementById('cart-body');
     const cartForm = document.getElementById('cart-form');
@@ -421,18 +421,15 @@
     const searchInput = document.getElementById('search-input');
     const historiaModal = document.getElementById('historia-modal');
 
-    // ============ DATOS GUARDADOS ============
     const savedNombre = localStorage.getItem('aym_client_name');
     const savedTel = localStorage.getItem('aym_client_tel');
     if(savedNombre) document.getElementById('cliente-nombre').value = savedNombre;
     if(savedTel) document.getElementById('cliente-telefono').value = savedTel;
 
-    // ============ EVENTOS HEADER ============
     document.getElementById('btn-historia').onclick = () => historiaModal.classList.add('active');
     document.getElementById('historia-close').onclick = () => historiaModal.classList.remove('active');
     historiaModal.onclick = (e) => { if(e.target === historiaModal) historiaModal.classList.remove('active'); };
 
-    // ============ SPLASH SCREEN ============
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
@@ -440,7 +437,6 @@
         }, 2000);
     });
 
-    // ============ BOTÓN COMPARTIR ============
     const btnHeroShare = document.getElementById('btn-hero-share');
     if (btnHeroShare) {
         btnHeroShare.onclick = () => {
@@ -449,7 +445,14 @@
         };
     }
 
-    // ============ RENDERIZAR EXTRAS DINÁMICOS ============
+    // ============ SOLUCIÓN MÉTODO DE PAGO: forzar selección de radio al tocar pastilla ============
+    document.querySelectorAll('.radio-pill').forEach(label => {
+        label.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+
     function renderizarExtras() {
         const container = document.getElementById('extras-group');
         if (!catalogoExtras || catalogoExtras.length === 0) {
@@ -464,14 +467,10 @@
         `).join('');
     }
 
-    // Delegación de eventos para extras dinámicos
     document.getElementById('extras-group').addEventListener('change', function(e) {
-        if (e.target && e.target.name === 'extra') {
-            actualizarCarrito();
-        }
+        if (e.target && e.target.name === 'extra') actualizarCarrito();
     });
 
-    // ============ RENDERIZAR CATÁLOGO ============
     function renderizarCatalogo() {
         const termino = searchInput.value.trim().toLowerCase();
         const filtrados = termino ? catalogo.filter(p => p.nombre.toLowerCase().includes(termino)) : catalogo;
@@ -506,7 +505,6 @@
         }).join('');
     }
 
-    // ============ ACTUALIZAR BOTONES DE RESEÑAS ============
     function actualizarBotonesResenas() {
         document.querySelectorAll('.review-count-btn').forEach(btn => {
             const bizcochoId = btn.dataset.bizcochoId;
@@ -516,7 +514,6 @@
         });
     }
 
-    // ============ CARRITO ============
     window.agregarAlCarrito = function(prodId, tIndex) {
         const prod = catalogo.find(p => p.id === prodId);
         if (!prod) return;
@@ -566,17 +563,14 @@
     window.disminuirItem = i => { carrito[i].cantidad > 1 ? carrito[i].cantidad-- : carrito.splice(i,1); actualizarCarrito(); };
     window.eliminarItem = i => { carrito.splice(i,1); actualizarCarrito(); };
 
-    // ============ ABRIR/CERRAR CARRITO ============
     function abrirCarrito() { cartPanel.classList.add('active'); overlay.classList.add('active'); }
     function cerrarCarrito() { cartPanel.classList.remove('active'); overlay.classList.remove('active'); }
     document.getElementById('fab-cart').onclick = () => cartPanel.classList.contains('active') ? cerrarCarrito() : abrirCarrito();
     overlay.onclick = cerrarCarrito;
     document.getElementById('cart-close').onclick = cerrarCarrito;
 
-    // ============ TOAST ============
     function mostrarToast(msg) { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
 
-    // ============ FORMATEAR TELÉFONO ============
     window.formatearTelefono = function(input) {
         let v = input.value.replace(/[^0-9]/g,'');
         if(v.length>3 && v.length<=6) v = v.slice(0,3)+'-'+v.slice(3);
@@ -584,7 +578,6 @@
         input.value = v;
     };
 
-    // ============ ENVIAR PEDIDO ============
     document.getElementById('btn-submit-order').onclick = function() {
         if (!carrito.length && !document.querySelector('#extras-group input[name="extra"]:checked')) return mostrarToast('Agrega al menos un producto o extra');
         const nombre = document.getElementById('cliente-nombre').value.trim().substring(0, 20);
@@ -657,188 +650,150 @@
         document.querySelectorAll('#extras-group input[name="extra"]').forEach(cb => cb.checked = false);
         actualizarCarrito();
     };
-        // ============ RESEÑAS: ABRIR MODAL PARA VER ============
-        window.abrirModalResenas = function(bizcochoId) {
-            currentBizcochoId = bizcochoId;
-            const producto = catalogo.find(p => p.id === bizcochoId);
-            document.getElementById('review-product-name').textContent = `Reseñas de ${producto ? producto.nombre : bizcochoId}`;
-            const filtradas = reviews.filter(r => r.bizcochoId === bizcochoId && r.visible !== false);
-            const lista = document.getElementById('review-list');
-            if (filtradas.length === 0) {
-                lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:2rem;">No hay reseñas aún. ¡Sé el primero!</p>';
-            } else {
-                lista.innerHTML = filtradas.map(r => `
-                    <div class="review-item-catalog">
-                        <div class="review-name">${escapeHTML(r.nombre)}</div>
-                        <div class="review-date">${new Date(r.fecha).toLocaleDateString('es-PR', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                        <div class="review-text">${escapeHTML(r.texto)}</div>
-                        ${r.respuesta ? `<div class="review-response"><strong>Respuesta de Azúcar y Migas:</strong> ${escapeHTML(r.respuesta)}</div>` : ''}
-                    </div>
-                `).join('');
+
+    function formatearFechaSegura(fechaStr) {
+        if (!fechaStr) return 'Fecha desconocida';
+        const fecha = new Date(fechaStr);
+        if (isNaN(fecha.getTime())) return 'Fecha no válida';
+        return fecha.toLocaleDateString('es-PR', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    window.abrirModalResenas = function(bizcochoId) {
+        currentBizcochoId = bizcochoId;
+        const producto = catalogo.find(p => p.id === bizcochoId);
+        document.getElementById('review-product-name').textContent = `Reseñas de ${producto ? producto.nombre : bizcochoId}`;
+        const filtradas = reviews.filter(r => r.bizcochoId === bizcochoId && r.visible !== false);
+        const lista = document.getElementById('review-list');
+        if (filtradas.length === 0) {
+            lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:2rem;">No hay reseñas aún. ¡Sé el primero!</p>';
+        } else {
+            lista.innerHTML = filtradas.map(r => `
+                <div class="review-item-catalog">
+                    <div class="review-name">${escapeHTML(r.nombre)}</div>
+                    <div class="review-date">${formatearFechaSegura(r.fecha)}</div>
+                    <div class="review-text">${escapeHTML(r.texto)}</div>
+                    ${r.respuesta ? `<div class="review-response"><strong>Respuesta de Azúcar y Migas:</strong> ${escapeHTML(r.respuesta)}</div>` : ''}
+                </div>
+            `).join('');
+        }
+        document.getElementById('review-modal').classList.add('active');
+    };
+
+    document.getElementById('review-close').onclick = () => document.getElementById('review-modal').classList.remove('active');
+    document.getElementById('review-modal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+
+    document.getElementById('btn-leave-review').onclick = () => {
+        document.getElementById('review-modal').classList.remove('active');
+        document.getElementById('leave-review-modal').classList.add('active');
+        const savedName = localStorage.getItem('aym_client_name');
+        if (savedName) document.getElementById('review-nombre').value = savedName;
+    };
+
+    document.getElementById('leave-review-close').onclick = () => document.getElementById('leave-review-modal').classList.remove('active');
+    document.getElementById('leave-review-modal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+
+    document.getElementById('btn-submit-review').onclick = async () => {
+        const nombre = document.getElementById('review-nombre').value.trim();
+        const texto = document.getElementById('review-texto').value.trim();
+        if (!nombre) return mostrarToast('Por favor ingresa tu nombre');
+        if (!texto) return mostrarToast('Por favor escribe tu experiencia');
+        if (texto.length < 10) return mostrarToast('Tu reseña debe tener al menos 10 caracteres');
+
+        const nuevaResena = {
+            id: 'rev_' + Date.now(),
+            bizcochoId: currentBizcochoId,
+            nombre: nombre,
+            texto: texto,
+            fecha: new Date().toISOString(),
+            respuesta: '',
+            visible: true
+        };
+
+        try {
+            if (firebaseReady && window.db) {
+                const { doc, arrayUnion, updateDoc, setDoc } = window.firebaseModules;
+                const docRef = doc(window.db, "configuracion", "estado_pos");
+                await updateDoc(docRef, { reviews: arrayUnion(nuevaResena) }).catch(async () => {
+                    await setDoc(docRef, { reviews: [nuevaResena] }, { merge: true });
+                });
             }
-            document.getElementById('review-modal').classList.add('active');
-        };
-
-        // ============ CERRAR MODAL DE RESEÑAS ============
-        document.getElementById('review-close').onclick = () => {
-            document.getElementById('review-modal').classList.remove('active');
-        };
-        document.getElementById('review-modal').addEventListener('click', function(e) {
-            if (e.target === this) this.classList.remove('active');
-        });
-
-        // ============ ABRIR MODAL PARA DEJAR RESEÑA ============
-        document.getElementById('btn-leave-review').onclick = () => {
-            document.getElementById('review-modal').classList.remove('active');
-            document.getElementById('leave-review-modal').classList.add('active');
-            // Prellenar nombre si ya existe
-            const savedName = localStorage.getItem('aym_client_name');
-            if (savedName) {
-                document.getElementById('review-nombre').value = savedName;
-            }
-        };
-
-        // ============ CERRAR MODAL DE DEJAR RESEÑA ============
-        document.getElementById('leave-review-close').onclick = () => {
+            localStorage.setItem('aym_client_name', nombre);
+            mostrarToast('✅ ¡Reseña publicada! Gracias por tu opinión.');
+            document.getElementById('review-nombre').value = '';
+            document.getElementById('review-texto').value = '';
             document.getElementById('leave-review-modal').classList.remove('active');
-        };
-        document.getElementById('leave-review-modal').addEventListener('click', function(e) {
-            if (e.target === this) this.classList.remove('active');
-        });
-
-        // ============ PUBLICAR NUEVA RESEÑA ============
-        document.getElementById('btn-submit-review').onclick = async () => {
-            const nombre = document.getElementById('review-nombre').value.trim();
-            const texto = document.getElementById('review-texto').value.trim();
-
-            if (!nombre) return mostrarToast('Por favor ingresa tu nombre');
-            if (!texto) return mostrarToast('Por favor escribe tu experiencia');
-            if (texto.length < 10) return mostrarToast('Tu reseña debe tener al menos 10 caracteres');
-
-            const nuevaResena = {
-                id: 'rev_' + Date.now(),
-                bizcochoId: currentBizcochoId,
-                nombre: nombre,
-                texto: texto,
-                fecha: new Date().toISOString(),
-                respuesta: '',
-                visible: true
-            };
-
-            try {
-                if (firebaseReady && window.db) {
-                    const { doc, arrayUnion, updateDoc, setDoc } = window.firebaseModules;
-                    const docRef = doc(window.db, "configuracion", "estado_pos");
-                    await updateDoc(docRef, {
-                        reviews: arrayUnion(nuevaResena)
-                    }).catch(async () => {
-                        // Si falla porque el documento no existe o no tiene el campo reviews
-                        await setDoc(docRef, { reviews: [nuevaResena] }, { merge: true });
-                    });
-                }
-
-                // Guardar nombre localmente
-                localStorage.setItem('aym_client_name', nombre);
-
-                mostrarToast('✅ ¡Reseña publicada! Gracias por tu opinión.');
-
-                // Limpiar formulario
-                document.getElementById('review-nombre').value = '';
-                document.getElementById('review-texto').value = '';
-
-                // Cerrar modal
-                document.getElementById('leave-review-modal').classList.remove('active');
-
-                // Recargar reviews localmente (se actualizará con el listener de Firebase)
-                if (currentBizcochoId) {
-                    // Pequeño delay para dar tiempo a Firebase
-                    setTimeout(() => {
-                        abrirModalResenas(currentBizcochoId);
-                    }, 500);
-                }
-
-            } catch (e) {
-                console.error('Error al publicar reseña:', e);
-                mostrarToast('Error al publicar. Intenta de nuevo.');
+            if (currentBizcochoId) {
+                setTimeout(() => { abrirModalResenas(currentBizcochoId); }, 500);
             }
-        };
+        } catch (e) {
+            console.error('Error al publicar reseña:', e);
+            mostrarToast('Error al publicar. Intenta de nuevo.');
+        }
+    };
 
-        // ============ TECLA ESCAPE PARA CERRAR MODALES ============
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.getElementById('review-modal').classList.remove('active');
-                document.getElementById('leave-review-modal').classList.remove('active');
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.getElementById('review-modal').classList.remove('active');
+            document.getElementById('leave-review-modal').classList.remove('active');
+        }
+    });
+
+    window.addEventListener('firebase-ready', () => {
+        firebaseReady = true;
+        const { doc, getDoc, onSnapshot } = window.firebaseModules;
+        const docRef = doc(window.db, "configuracion", "estado_pos");
+        getDoc(docRef).then(snap => {
+            if (snap.exists()) {
+                const data = snap.data();
+                if (data.catalogoPOS) catalogo = data.catalogoPOS;
+                catalogoExtras = data.extrasConfig || [];
+                reviews = data.reviews || [];
             }
+            renderizarExtras();
+            renderizarCatalogo();
+            actualizarBotonesResenas();
         });
-
-        // ============ SINCRONIZACIÓN FIREBASE ============
-        window.addEventListener('firebase-ready', () => {
-            firebaseReady = true;
-            const { doc, getDoc, onSnapshot } = window.firebaseModules;
-            const docRef = doc(window.db, "configuracion", "estado_pos");
-
-            // Carga inicial
-            getDoc(docRef).then(snap => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    if (data.catalogoPOS) catalogo = data.catalogoPOS;
-                    catalogoExtras = data.extrasConfig || [];
-                    reviews = data.reviews || [];
-                }
+        onSnapshot(docRef, (snap) => {
+            if (snap.exists()) {
+                const data = snap.data();
+                if (data.catalogoPOS) catalogo = data.catalogoPOS;
+                catalogoExtras = data.extrasConfig || [];
+                reviews = data.reviews || [];
                 renderizarExtras();
                 renderizarCatalogo();
                 actualizarBotonesResenas();
-            });
-
-            // Escuchar cambios en tiempo real
-            onSnapshot(docRef, (snap) => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    if (data.catalogoPOS) catalogo = data.catalogoPOS;
-                    catalogoExtras = data.extrasConfig || [];
-                    reviews = data.reviews || [];
-                    renderizarExtras();
-                    renderizarCatalogo();
-                    actualizarBotonesResenas();
-
-                    // Si el modal de reseñas está abierto, refrescar su contenido
-                    const reviewModal = document.getElementById('review-modal');
-                    if (reviewModal.classList.contains('active') && currentBizcochoId) {
-                        abrirModalResenas(currentBizcochoId);
-                    }
+                const reviewModal = document.getElementById('review-modal');
+                if (reviewModal.classList.contains('active') && currentBizcochoId) {
+                    abrirModalResenas(currentBizcochoId);
                 }
-            });
-        });
-
-        // ============ SI FIREBASE YA ESTÁ LISTO (POR SI ACASO) ============
-        if (window.db && window.firebaseModules) {
-            // Disparar manualmente si ya está todo listo
-            window.dispatchEvent(new Event('firebase-ready'));
-        }
-
-        // ============ CÁLCULO DE FECHA MÍNIMA (48 HORAS) ============
-        let fechaMin = new Date();
-        fechaMin.setDate(fechaMin.getDate() + 2);
-        let anio = fechaMin.getFullYear();
-        let mes = String(fechaMin.getMonth() + 1).padStart(2, '0');
-        let dia = String(fechaMin.getDate()).padStart(2, '0');
-        document.getElementById('fecha-entrega').min = `${anio}-${mes}-${dia}`;
-
-        // ============ AÑO ACTUAL EN EL FOOTER ============
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-
-        // ============ OCULTAR TECLADO AL HACER SCROLL ============
-        window.addEventListener('scroll', () => {
-            if (document.activeElement === searchInput) {
-                searchInput.blur();
             }
-        }, { passive: true });
+        });
+    });
 
-        // ============ RENDERIZAR CATÁLOGO INICIAL ============
-        renderizarCatalogo();
-        renderizarExtras();
-    })();
-    </script>
+    if (window.db && window.firebaseModules) {
+        window.dispatchEvent(new Event('firebase-ready'));
+    }
+
+    let fechaMin = new Date();
+    fechaMin.setDate(fechaMin.getDate() + 2);
+    let anio = fechaMin.getFullYear();
+    let mes = String(fechaMin.getMonth() + 1).padStart(2, '0');
+    let dia = String(fechaMin.getDate()).padStart(2, '0');
+    document.getElementById('fecha-entrega').min = `${anio}-${mes}-${dia}`;
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    window.addEventListener('scroll', () => {
+        if (document.activeElement === searchInput) searchInput.blur();
+    }, { passive: true });
+
+    renderizarCatalogo();
+    renderizarExtras();
+})();
+</script>
 </body>
 </html>
-    
