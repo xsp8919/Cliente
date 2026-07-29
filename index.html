@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Azúcar y Migas | Catálogo</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Az%C3%BAcar%20y%20Migas%22%2C%22short_name%22%3A%22AyM%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8f9fa%22%2C%22theme_color%22%3A%22%23d9777f%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ctext%20y%3D'.9em'%20font-size%3D'90'%3E%F0%9F%A7%81%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Az%C3%BAcar%20y%20Migas%22%2C%22short_name%22%3A%22AyM%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%f8f9fa%22%2C%22theme_color%22%3A%22%23d9777f%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ctext%20y%3D'.9em'%20font-size%3D'90'%3E%F0%9F%A7%81%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -152,6 +152,42 @@
         .size-btn:hover { border-color: var(--primary); background: #fff5f6; }
         .size-price { font-weight: 700; color: var(--primary); font-size: 1rem; }
 
+        /* Botón de reseñas en tarjeta */
+        .review-count-btn {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            background: #fef3c7; border: 1px solid #fbbf24; color: #92400e;
+            padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer;
+            margin-top: 0.5rem; width: fit-content;
+        }
+        .review-count-btn:hover { background: #fde68a; }
+
+        /* Modales de reseñas */
+        .review-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150;
+            display: none; align-items: center; justify-content: center;
+            padding: 1rem; backdrop-filter: blur(4px);
+        }
+        .review-modal.active { display: flex; }
+        .review-modal-content {
+            background: white; border-radius: 16px; padding: 1.5rem; max-width: 500px;
+            width: 100%; max-height: 80vh; overflow-y: auto; position: relative;
+        }
+        .review-item-catalog {
+            border-bottom: 1px solid #eee; padding: 0.8rem 0;
+        }
+        .review-name { font-weight: 700; }
+        .review-date { font-size: 0.8rem; color: #666; }
+        .review-text { margin: 0.3rem 0; }
+        .review-response {
+            background: #f0fdf4; border-left: 3px solid #16a34a; padding: 0.4rem 0.6rem;
+            margin-top: 0.3rem; font-size: 0.9rem;
+        }
+        .btn-leave-review {
+            background: var(--primary); color: white; border: none;
+            padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer;
+            margin-top: 1rem; width: 100%; font-weight: 600;
+        }
+
         .fab-cart { position: fixed; bottom: 24px; right: 24px; z-index: 60; background: var(--primary); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; box-shadow: 0 8px 24px rgba(217,119,127,0.45); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
         .fab-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; min-width: 24px; height: 24px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
@@ -160,7 +196,6 @@
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 70; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* ============ CART PANEL (CORRECCIÓN SCROLL IOS) ============ */
         .cart-panel {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
             background: var(--surface); border-radius: 20px 20px 0 0;
@@ -223,7 +258,8 @@
         .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
         .confirm-overlay.active { opacity: 1; pointer-events: auto; }
         .confirm-box { background: var(--surface); border-radius: 20px; padding: 2rem; text-align: center; max-width: 400px; }
-        .footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+        .footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .footer a { color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; font-weight: 600; margin-top: 0.5rem; }
         .skeleton-card { background: var(--surface); border-radius: var(--radius); overflow: hidden; }
         .skeleton-img { width: 100%; height: 180px; background: #e5e7eb; animation: shimmer 1.5s infinite; }
         @keyframes shimmer { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
@@ -270,347 +306,539 @@
             <div class="skeleton-card"><div class="skeleton-img"></div><div style="padding:1rem;"><div style="height:20px;background:#e5e7eb;border-radius:8px;margin-bottom:10px;"></div><div style="height:14px;background:#e5e7eb;border-radius:8px;"></div></div></div>
         </div>
     </div>
+    
+<div class="footer">
+    <div>Hecho con ❤️ <strong>Azúcar y Migas</strong> &copy; <span id="current-year"></span></div>
+    <a href="https://www.instagram.com/azucarymigas.pr?igsh=MzRlODBiNWFlZA==" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Síguenos en Instagram
+    </a>
+</div>
 
-    <div class="footer">Hecho con ❤️ <strong>Azúcar y Migas</strong> &copy; <span id="current-year"></span></div>
+<button class="fab-cart" id="fab-cart">🛒<span class="fab-badge" id="fab-badge" style="display:none;">0</span></button>
 
-    <button class="fab-cart" id="fab-cart">🛒<span class="fab-badge" id="fab-badge" style="display:none;">0</span></button>
+<div class="overlay" id="overlay"></div>
 
-    <div class="overlay" id="overlay"></div>
-
-    <div class="cart-panel" id="cart-panel">
-        <div class="cart-handle"></div>
-        <div class="cart-header"><h3>🛒 Tu Pedido</h3><button id="cart-close">✕</button></div>
-        <div class="cart-body" id="cart-body"><div class="cart-empty"><span style="font-size:3rem;">🧁</span><br>Toca los tamaños para comenzar.</div></div>
-        <div class="cart-form" id="cart-form" style="display:none;">
-            <div style="display:flex;justify-content:space-between;font-size:1.3rem;font-weight:700;"><span>Total</span><span id="cart-total-amount">$0.00</span></div>
-            <label>👤 Nombre *</label>
-            <input type="text" id="cliente-nombre" placeholder="Ej. María González" maxlength="20">
-            <label>📞 Teléfono *</label>
-            <input type="tel" id="cliente-telefono" placeholder="787-123-4567" oninput="formatearTelefono(this)">
-            <label>📅 Fecha de entrega *</label>
-            <input type="date" id="fecha-entrega">
-            <label>💵 Método de pago</label>
-            <div class='radio-group' id='metodo-pago-group'>
-              <label class='radio-pill'><input type='radio' name='pago' value='Efectivo'> Efectivo</label>
-              <label class='radio-pill'><input type='radio' name='pago' value='ATH Móvil'> ATH Móvil</label>
-              <label class='radio-pill'><input type='radio' name='pago' value='Otro'> Otro</label>
-            </div>
-            <label>🎁 Extras opcionales (Upselling)</label>
-            <div class='extras-group' id='extras-group'>
-              <label class='extra-checkbox'><input type='checkbox' name='extra' value='Vela / Chispera' data-precio='2.50'> Vela o Chispera (+$2.50)</label>
-              <label class='extra-checkbox'><input type='checkbox' name='extra' value='Topper de Acrílico' data-precio='4.00'> Topper Personalizado (+$4.00)</label>
-              <label class='extra-checkbox'><input type='checkbox' name='extra' value='Caja de Regalo' data-precio='3.00'> Caja de Regalo con Lazo (+$3.00)</label>
-            </div>
-            <label>✍️ Dedicatoria o Tarjeta</label>
-            <input type='text' id='cart-dedicatoria' placeholder='Ej. Feliz Cumpleaños Mamá' maxlength='40'>
-            <button class="btn-submit btn-whatsapp-order" id="btn-submit-order">Enviar por WhatsApp</button>
-            <button class="btn-submit btn-clear-cart" id="btn-clear-cart">🗑️ Vaciar carrito</button>
+<div class="cart-panel" id="cart-panel">
+    <div class="cart-handle"></div>
+    <div class="cart-header"><h3>🛒 Tu Pedido</h3><button id="cart-close">✕</button></div>
+    <div class="cart-body" id="cart-body"><div class="cart-empty"><span style="font-size:3rem;">🧁</span><br>Toca los tamaños para comenzar.</div></div>
+    <div class="cart-form" id="cart-form" style="display:none;">
+        <div style="display:flex;justify-content:space-between;font-size:1.3rem;font-weight:700;"><span>Total</span><span id="cart-total-amount">$0.00</span></div>
+        <label>👤 Nombre *</label>
+        <input type="text" id="cliente-nombre" placeholder="Ej. María González" maxlength="20">
+        <label>📞 Teléfono *</label>
+        <input type="tel" id="cliente-telefono" placeholder="787-123-4567" oninput="formatearTelefono(this)">
+        <label>📅 Fecha de entrega *</label>
+        <input type="date" id="fecha-entrega">
+        <label>💵 Método de pago</label>
+        <div class='radio-group' id='metodo-pago-group'>
+          <label class='radio-pill'><input type='radio' name='pago' value='Efectivo'> Efectivo</label>
+          <label class='radio-pill'><input type='radio' name='pago' value='ATH Móvil'> ATH Móvil</label>
+          <label class='radio-pill'><input type='radio' name='pago' value='Otro'> Otro</label>
         </div>
-    </div>
-
-    <div class="toast" id="toast"></div>
-    <div class="confirm-overlay" id="confirm-overlay"><div class="confirm-box"><div style="font-size:3.5rem;">✅</div><h3 id="confirm-title"></h3><p id="confirm-msg"></p><button id="confirm-ok">Entendido</button></div></div>
-
-    <div class="historia-modal" id="historia-modal">
-        <div class="historia-content">
-            <button class="historia-close" id="historia-close">✕</button>
-            <h3>Nuestra Historia 🧁</h3>
-            <p>En <strong>Azúcar y Migas</strong> creemos que los mejores momentos de la vida siempre van acompañados de algo dulce y hecho con el corazón.</p>
-            <p>Lo que comenzó como una pasión casera por el horno, horneando para familiares y amigos cercanos, se convirtió en un proyecto artesanal dedicado a llevar sabor, frescura y felicidad a cada celebración.</p>
-            <p>Cada bizcocho es preparado desde cero bajo pedido estricto de 48 horas, utilizando ingredientes frescos de la más alta calidad y un proceso totalmente artesanal, sin atajos industriales.</p>
-            <p style="font-weight: 600; color: var(--primary); text-align: center; margin-top: 1.5rem;">¡Gracias por permitirnos ser parte de tus momentos más dulces! ❤️</p>
+        <label>🎁 Extras opcionales (Upselling)</label>
+        <div class='extras-group' id='extras-group'>
+            <!-- Los extras se cargarán dinámicamente desde Firebase -->
         </div>
+        <label>✍️ Dedicatoria o Tarjeta</label>
+        <input type='text' id='cart-dedicatoria' placeholder='Ej. Feliz Cumpleaños Mamá' maxlength='40'>
+        <button class="btn-submit btn-whatsapp-order" id="btn-submit-order">Enviar por WhatsApp</button>
+        <button class="btn-submit btn-clear-cart" id="btn-clear-cart">🗑️ Vaciar carrito</button>
     </div>
+</div>
 
-    <script>
-        (function() {
-            const NEGOCIO_WHATSAPP = '17876744838';
+<div class="toast" id="toast"></div>
+<div class="confirm-overlay" id="confirm-overlay"><div class="confirm-box"><div style="font-size:3.5rem;">✅</div><h3 id="confirm-title"></h3><p id="confirm-msg"></p><button id="confirm-ok">Entendido</button></div></div>
 
-            const productMeta = {
-                "mojadito": {
-                    imagen: "https://images.unsplash.com/photo-1578985545062-69921c12dc89?w=600&h=400&fit=crop",
-                    descripcion: "Bizcocho esponjoso bañado en almíbar, suave y lleno de sabor. Ideal para cualquier ocasión."
-                },
-                "zanahoria": {
-                    imagen: "https://raw.githubusercontent.com/xsp8919/Cliente/a108a9e0a1915e1c60adf319cee42bae2b3ec6b2/Zanahoria.jpg",
-                    descripcion: "Clásico de zanahoria con especias y frosting de queso crema. Húmedo y delicioso."
-                },
-                "chocolate": {
-                    imagen: "https://raw.githubusercontent.com/xsp8919/Cliente/a108a9e0a1915e1c60adf319cee42bae2b3ec6b2/Chocolate.jpg",
-                    descripcion: "Intenso bizcocho de chocolate con cobertura cremosa. Para los verdaderos amantes del cacao."
-                
-                },
-                "pistacho": {
-                    imagen: "https://raw.githubusercontent.com/xsp8919/Cliente/a108a9e0a1915e1c60adf319cee42bae2b3ec6b2/Pistacho.jpg",
-                    descripcion: "Suave bizcocho de pistacho natural con un toque elegante y sabor único."
-                },
-                "brownie": {
-                    imagen: "https://images.unsplash.com/photo-1607920591413-4ec007e70023?w=600&h=400&fit=crop",
-                    descripcion: "Brownies densos y chocolatosos, con ese punto perfecto entre crujiente y suave."
-                }
-            };
+<div class="historia-modal" id="historia-modal">
+    <div class="historia-content">
+        <button class="historia-close" id="historia-close">✕</button>
+        <h3>Nuestra Historia 🧁</h3>
+        <p>En <strong>Azúcar y Migas</strong> creemos que los mejores momentos de la vida siempre van acompañados de algo dulce y hecho con el corazón.</p>
+        <p>Lo que comenzó como una pasión casera por el horno, horneando para familiares y amigos cercanos, se convirtió en un proyecto artesanal dedicado a llevar sabor, frescura y felicidad a cada celebración.</p>
+        <p>Cada bizcocho es preparado desde cero bajo pedido estricto de 48 horas, utilizando ingredientes frescos de la más alta calidad y un proceso totalmente artesanal, sin atajos industriales.</p>
+        <p style="font-weight: 600; color: var(--primary); text-align: center; margin-top: 1.5rem;">¡Gracias por permitirnos ser parte de tus momentos más dulces! ❤️</p>
+    </div>
+</div>
 
-            const defaultPOS = [
-                { id: "mojadito", nombre: "Mojadito", emoji: "🍰", tamanos: [{ id: "ind", nombre: "Individual", precio: 5.00 }, { id: "med", nombre: "Mediano", precio: 9.00 }, { id: "fam", nombre: "Familiar", precio: 18.00 }] },
-                { id: "zanahoria", nombre: "Zanahoria", emoji: "🥕", tamanos: [{ id: "ind", nombre: "Individual", precio: 6.00 }, { id: "med", nombre: "Mediano", precio: 10.00 }, { id: "fam", nombre: "Familiar", precio: 20.00 }] },
-                { id: "chocolate", nombre: "Chocolate", emoji: "🍫", tamanos: [{ id: "ind", nombre: "Individual", precio: 6.00 }, { id: "med", nombre: "Mediano", precio: 9.00 }, { id: "fam", nombre: "Familiar", precio: 20.00 }] },
-                { id: "pistacho", nombre: "Pistacho", emoji: "💚", tamanos: [{ id: "ind", nombre: "Individual", precio: 7.00 }, { id: "med", nombre: "Mediano", precio: 12.00 }, { id: "fam", nombre: "Familiar", precio: 22.00 }] },
-                { id: "brownie", nombre: "Brownies", emoji: "🍪", tamanos: [{ id: "med", nombre: "Mediano", precio: 9.00 }, { id: "fam", nombre: "Familiar", precio: 20.00 }] }
-            ];
+<!-- Modal para ver reseñas de un bizcocho -->
+<div id="review-modal" class="review-modal">
+    <div class="review-modal-content">
+        <button class="historia-close" id="review-close">✕</button>
+        <h3 id="review-product-name"></h3>
+        <div id="review-list"></div>
+        <button class="btn-leave-review" id="btn-leave-review">✍️ Deja tu experiencia</button>
+    </div>
+</div>
 
-            let catalogo = defaultPOS.map(p => ({ ...p, ...productMeta[p.id] }));
-            let carrito = [];
-            let firebaseReady = false;
+<!-- Modal para dejar una nueva reseña -->
+<div id="leave-review-modal" class="review-modal">
+    <div class="review-modal-content">
+        <button class="historia-close" id="leave-review-close">✕</button>
+        <h3>Deja tu reseña</h3>
+        <label>Nombre</label>
+        <input type="text" id="review-nombre" maxlength="30" placeholder="Tu nombre" style="width:100%;padding:0.6rem;margin:0.5rem 0;border:1px solid #ddd;border-radius:8px;">
+        <label>Tu experiencia</label>
+        <textarea id="review-texto" maxlength="300" rows="4" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:8px;"></textarea>
+        <button class="btn-leave-review" id="btn-submit-review">Publicar reseña</button>
+    </div>
+</div>
 
-            function escapeHTML(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+<script>
+(function() {
+    // ============ CONFIGURACIÓN ============
+    const NEGOCIO_WHATSAPP = '17876744838';
 
-            const catalogGrid = document.getElementById('catalog-grid');
-            const cartBody = document.getElementById('cart-body');
-            const cartForm = document.getElementById('cart-form');
-            const cartTotalAmount = document.getElementById('cart-total-amount');
-            const fabBadge = document.getElementById('fab-badge');
-            const cartPanel = document.getElementById('cart-panel');
-            const overlay = document.getElementById('overlay');
-            const toast = document.getElementById('toast');
-            const confirmOverlay = document.getElementById('confirm-overlay');
-            const searchInput = document.getElementById('search-input');
-            const historiaModal = document.getElementById('historia-modal');
+    const defaultPOS = [
+        { id: "mojadito", nombre: "Mojadito", emoji: "🍰", tamanos: [{ id: "ind", nombre: "Individual", precio: 5.00 }, { id: "med", nombre: "Mediano", precio: 9.00 }, { id: "fam", nombre: "Familiar", precio: 18.00 }] },
+        { id: "zanahoria", nombre: "Zanahoria", emoji: "🥕", tamanos: [{ id: "ind", nombre: "Individual", precio: 6.00 }, { id: "med", nombre: "Mediano", precio: 10.00 }, { id: "fam", nombre: "Familiar", precio: 20.00 }] },
+        { id: "chocolate", nombre: "Chocolate", emoji: "🍫", tamanos: [{ id: "ind", nombre: "Individual", precio: 6.00 }, { id: "med", nombre: "Mediano", precio: 9.00 }, { id: "fam", nombre: "Familiar", precio: 20.00 }] },
+        { id: "pistacho", nombre: "Pistacho", emoji: "💚", tamanos: [{ id: "ind", nombre: "Individual", precio: 7.00 }, { id: "med", nombre: "Mediano", precio: 12.00 }, { id: "fam", nombre: "Familiar", precio: 22.00 }] },
+        { id: "brownie", nombre: "Brownies", emoji: "🍪", tamanos: [{ id: "med", nombre: "Mediano", precio: 9.00 }, { id: "fam", nombre: "Familiar", precio: 20.00 }] }
+    ];
 
-            const savedNombre = localStorage.getItem('aym_client_name');
-            const savedTel = localStorage.getItem('aym_client_tel');
-            if(savedNombre) document.getElementById('cliente-nombre').value = savedNombre;
-            if(savedTel) document.getElementById('cliente-telefono').value = savedTel;
+    let catalogo = defaultPOS;
+    let catalogoExtras = [];
+    let reviews = [];
+    let carrito = [];
+    let firebaseReady = false;
+    let currentBizcochoId = null;
 
-            document.getElementById('btn-historia').onclick = () => historiaModal.classList.add('active');
-            document.getElementById('historia-close').onclick = () => historiaModal.classList.remove('active');
-            historiaModal.onclick = (e) => { if(e.target === historiaModal) historiaModal.classList.remove('active'); };
+    // ============ ESCAPE HTML ============
+    function escapeHTML(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-            window.addEventListener('DOMContentLoaded', () => {
-                setTimeout(() => {
-                    const splash = document.getElementById('splash-screen');
-                    if (splash) splash.classList.add('fade-out');
-                }, 2000);
+    // ============ REFERENCIAS DOM ============
+    const catalogGrid = document.getElementById('catalog-grid');
+    const cartBody = document.getElementById('cart-body');
+    const cartForm = document.getElementById('cart-form');
+    const cartTotalAmount = document.getElementById('cart-total-amount');
+    const fabBadge = document.getElementById('fab-badge');
+    const cartPanel = document.getElementById('cart-panel');
+    const overlay = document.getElementById('overlay');
+    const toast = document.getElementById('toast');
+    const confirmOverlay = document.getElementById('confirm-overlay');
+    const searchInput = document.getElementById('search-input');
+    const historiaModal = document.getElementById('historia-modal');
+
+    // ============ DATOS GUARDADOS ============
+    const savedNombre = localStorage.getItem('aym_client_name');
+    const savedTel = localStorage.getItem('aym_client_tel');
+    if(savedNombre) document.getElementById('cliente-nombre').value = savedNombre;
+    if(savedTel) document.getElementById('cliente-telefono').value = savedTel;
+
+    // ============ EVENTOS HEADER ============
+    document.getElementById('btn-historia').onclick = () => historiaModal.classList.add('active');
+    document.getElementById('historia-close').onclick = () => historiaModal.classList.remove('active');
+    historiaModal.onclick = (e) => { if(e.target === historiaModal) historiaModal.classList.remove('active'); };
+
+    // ============ SPLASH SCREEN ============
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if (splash) splash.classList.add('fade-out');
+        }, 2000);
+    });
+
+    // ============ BOTÓN COMPARTIR ============
+    const btnHeroShare = document.getElementById('btn-hero-share');
+    if (btnHeroShare) {
+        btnHeroShare.onclick = () => {
+            const mensaje = `✨ ¡Descubre los deliciosos bizcochos artesanales de *Azúcar y Migas*! 🧁\n\nMira el catálogo completo y haz tu pedido directamente aquí:\n${window.location.href}`;
+            window.open('https://wa.me/?text=' + encodeURIComponent(mensaje), '_blank');
+        };
+    }
+
+    // ============ RENDERIZAR EXTRAS DINÁMICOS ============
+    function renderizarExtras() {
+        const container = document.getElementById('extras-group');
+        if (!catalogoExtras || catalogoExtras.length === 0) {
+            container.innerHTML = '<span style="font-size:0.85rem;color:var(--text-muted);">No hay extras disponibles.</span>';
+            return;
+        }
+        container.innerHTML = catalogoExtras.map(ex => `
+            <label class='extra-checkbox'>
+                <input type='checkbox' name='extra' value='${escapeHTML(ex.nombre)}' data-precio='${ex.precio}'>
+                ${escapeHTML(ex.nombre)} (+$${ex.precio.toFixed(2)})
+            </label>
+        `).join('');
+    }
+
+    // Delegación de eventos para extras dinámicos
+    document.getElementById('extras-group').addEventListener('change', function(e) {
+        if (e.target && e.target.name === 'extra') {
+            actualizarCarrito();
+        }
+    });
+
+    // ============ RENDERIZAR CATÁLOGO ============
+    function renderizarCatalogo() {
+        const termino = searchInput.value.trim().toLowerCase();
+        const filtrados = termino ? catalogo.filter(p => p.nombre.toLowerCase().includes(termino)) : catalogo;
+        if (filtrados.length === 0) {
+            catalogGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">🔍 No se encontraron bizcochos.</div>`;
+            return;
+        }
+        catalogGrid.innerHTML = filtrados.map(prod => {
+            const img = prod.imagen || null;
+            const desc = prod.descripcion || '';
+            const imagenSrc = img ? `<img src="${escapeHTML(img)}" alt="${escapeHTML(prod.nombre)}" class="card-img" loading="lazy">` : `<span style="font-size:4rem;">${prod.emoji||'🧁'}</span>`;
+            const reviewCount = reviews.filter(r => r.bizcochoId === prod.id && r.visible !== false).length;
+            return `
+            <div class="card" data-prod-id="${prod.id}">
+                <div class="card-img-container">${imagenSrc}</div>
+                <div class="card-body">
+                    <div class="card-title">${escapeHTML(prod.nombre)}</div>
+                    <div class="card-desc">${escapeHTML(desc)}</div>
+                    <div class="card-sizes">
+                        ${prod.tamanos.map((tam, tIndex) => `
+                            <button class="size-btn" onclick="agregarAlCarrito('${prod.id}', ${tIndex})">
+                                <span>${escapeHTML(tam.nombre)}</span>
+                                <span class="size-price">$${tam.precio.toFixed(2)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <button class="review-count-btn" data-bizcocho-id="${prod.id}" onclick="event.stopPropagation(); abrirModalResenas('${prod.id}')">
+                        📝 ${reviewCount} reseña${reviewCount !== 1 ? 's' : ''}
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ============ ACTUALIZAR BOTONES DE RESEÑAS ============
+    function actualizarBotonesResenas() {
+        document.querySelectorAll('.review-count-btn').forEach(btn => {
+            const bizcochoId = btn.dataset.bizcochoId;
+            if (!bizcochoId) return;
+            const count = reviews.filter(r => r.bizcochoId === bizcochoId && r.visible !== false).length;
+            btn.textContent = `📝 ${count} reseña${count !== 1 ? 's' : ''}`;
+        });
+    }
+
+    // ============ CARRITO ============
+    window.agregarAlCarrito = function(prodId, tIndex) {
+        const prod = catalogo.find(p => p.id === prodId);
+        if (!prod) return;
+        const tam = prod.tamanos[tIndex];
+        const itemId = `${prod.id}-${tam.id}`;
+        const existente = carrito.find(i => i.id === itemId);
+        if (existente) existente.cantidad++;
+        else carrito.push({ id: itemId, nombre: prod.nombre, tamano: tam.nombre, precio: tam.precio, cantidad: 1 });
+        actualizarCarrito();
+        mostrarToast('✅ Agregado');
+        fabBadge.classList.remove('pop-anim');
+        void fabBadge.offsetWidth;
+        fabBadge.classList.add('pop-anim');
+    };
+
+    function actualizarCarrito() {
+        let total = carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
+        document.querySelectorAll('#extras-group input[name="extra"]:checked').forEach(cb => {
+            total += parseFloat(cb.dataset.precio || 0);
+        });
+        const totalItems = carrito.reduce((s,i) => s + i.cantidad, 0);
+        fabBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+        fabBadge.textContent = totalItems;
+        cartTotalAmount.textContent = `$${total.toFixed(2)}`;
+        if (carrito.length === 0 && !document.querySelector('#extras-group input[name="extra"]:checked')) {
+            cartBody.innerHTML = `<div class="cart-empty"><span style="font-size:3rem;">🧁</span><br>Toca los tamaños para comenzar.</div>`;
+            cartForm.style.display = 'none';
+        } else {
+            cartBody.innerHTML = carrito.map((item, i) => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${escapeHTML(item.nombre)}</div>
+                        <div class="cart-item-detail">${escapeHTML(item.tamano)}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button onclick="disminuirItem(${i})">−</button><span>${item.cantidad}</span><button onclick="aumentarItem(${i})">+</button>
+                    </div>
+                    <div class="cart-item-price">$${(item.precio * item.cantidad).toFixed(2)}</div>
+                    <button class="cart-item-delete" onclick="eliminarItem(${i})">🗑️</button>
+                </div>
+            `).join('');
+            cartForm.style.display = 'block';
+        }
+    }
+
+    window.aumentarItem = i => { carrito[i].cantidad++; actualizarCarrito(); };
+    window.disminuirItem = i => { carrito[i].cantidad > 1 ? carrito[i].cantidad-- : carrito.splice(i,1); actualizarCarrito(); };
+    window.eliminarItem = i => { carrito.splice(i,1); actualizarCarrito(); };
+
+    // ============ ABRIR/CERRAR CARRITO ============
+    function abrirCarrito() { cartPanel.classList.add('active'); overlay.classList.add('active'); }
+    function cerrarCarrito() { cartPanel.classList.remove('active'); overlay.classList.remove('active'); }
+    document.getElementById('fab-cart').onclick = () => cartPanel.classList.contains('active') ? cerrarCarrito() : abrirCarrito();
+    overlay.onclick = cerrarCarrito;
+    document.getElementById('cart-close').onclick = cerrarCarrito;
+
+    // ============ TOAST ============
+    function mostrarToast(msg) { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+
+    // ============ FORMATEAR TELÉFONO ============
+    window.formatearTelefono = function(input) {
+        let v = input.value.replace(/[^0-9]/g,'');
+        if(v.length>3 && v.length<=6) v = v.slice(0,3)+'-'+v.slice(3);
+        else if(v.length>6) v = v.slice(0,3)+'-'+v.slice(3,6)+'-'+v.slice(6,10);
+        input.value = v;
+    };
+
+    // ============ ENVIAR PEDIDO ============
+    document.getElementById('btn-submit-order').onclick = function() {
+        if (!carrito.length && !document.querySelector('#extras-group input[name="extra"]:checked')) return mostrarToast('Agrega al menos un producto o extra');
+        const nombre = document.getElementById('cliente-nombre').value.trim().substring(0, 20);
+        const tel = document.getElementById('cliente-telefono').value.trim();
+        const fechaRaw = document.getElementById('fecha-entrega').value;
+        if (!nombre || !tel || !fechaRaw) return mostrarToast('Completa todos los campos obligatorios');
+
+        let fecha = fechaRaw;
+        if (fechaRaw.includes('-')) {
+            const partes = fechaRaw.split('-');
+            if (partes.length === 3) fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        const metodoPago = document.querySelector('input[name="pago"]:checked')?.value || 'No especificado';
+        let total = carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
+        let extrasSeleccionados = [];
+        document.querySelectorAll('#extras-group input[name="extra"]:checked').forEach(cb => {
+            extrasSeleccionados.push({ nombre: cb.value, precio: parseFloat(cb.dataset.precio) });
+            total += parseFloat(cb.dataset.precio);
+        });
+        const dedicatoria = document.getElementById('cart-dedicatoria').value.trim();
+
+        const orden = {
+            id: 'ord_'+Date.now(),
+            cliente: {nombre, telefono: tel},
+            fechaEntrega: fecha,
+            estado:'pendiente',
+            productos: carrito.map(i => ({...i})),
+            extras: extrasSeleccionados,
+            dedicatoria,
+            total
+        };
+
+        let mensaje = `🧁 *Azúcar y Migas* - Nuevo Pedido 🧁\n\n👤 ${nombre}\n📞 ${tel}\n📅 ${fecha}\n`;
+        if(metodoPago) mensaje += `💵 Pago: ${metodoPago}\n`;
+        mensaje += `\n📝 *Productos:*\n`;
+        carrito.forEach(i => mensaje += `▪️ ${i.cantidad}x ${i.nombre} (${i.tamano}) - $${(i.precio*i.cantidad).toFixed(2)}\n`);
+        if(extrasSeleccionados.length) {
+            mensaje += `\n🎁 *Complementos:*\n`;
+            extrasSeleccionados.forEach(e => mensaje += `▪️ Extra: ${e.nombre} ($${e.precio.toFixed(2)})\n`);
+        }
+        if(dedicatoria) mensaje += `\n✍️ *Dedicatoria:* ${dedicatoria}\n`;
+        mensaje += `\n💰 Total: $${total.toFixed(2)}\n\n✨ *Estado:* Pendiente de confirmación\n📱 _Pedido enviado desde el catálogo web_`;
+
+        window.open('https://wa.me/' + NEGOCIO_WHATSAPP + '?text=' + encodeURIComponent(mensaje), '_blank');
+
+        if (firebaseReady && window.db) {
+            const { doc, updateDoc, arrayUnion, setDoc } = window.firebaseModules;
+            const docRef = doc(window.db, "configuracion", "estado_pos");
+            updateDoc(docRef, { ordenes: arrayUnion(orden) }).catch(() => {
+                setDoc(docRef, { ordenes: [orden] }).catch(() => {});
             });
+        }
 
-            const btnHeroShare = document.getElementById('btn-hero-share');
-            if (btnHeroShare) {
-                btnHeroShare.onclick = () => {
-                    const mensaje = `✨ ¡Descubre los deliciosos bizcochos artesanales de *Azúcar y Migas*! 🧁\n\nMira el catálogo completo y haz tu pedido directamente aquí:\n${window.location.href}`;
-                    window.open('https://wa.me/?text=' + encodeURIComponent(mensaje), '_blank');
-                };
+        localStorage.setItem('aym_client_name', nombre);
+        localStorage.setItem('aym_client_tel', tel);
+
+        document.getElementById('confirm-title').textContent = '✅ ¡Pedido enviado!';
+        document.getElementById('confirm-msg').textContent = 'Te contactaremos pronto.';
+        confirmOverlay.classList.add('active');
+        carrito = []; actualizarCarrito();
+        document.getElementById('cart-dedicatoria').value = '';
+        cerrarCarrito();
+    };
+
+    document.getElementById('confirm-ok').onclick = () => confirmOverlay.classList.remove('active');
+    document.getElementById('btn-clear-cart').onclick = () => {
+        carrito = [];
+        document.getElementById('cart-dedicatoria').value = '';
+        document.querySelectorAll('#extras-group input[name="extra"]').forEach(cb => cb.checked = false);
+        actualizarCarrito();
+    };
+        // ============ RESEÑAS: ABRIR MODAL PARA VER ============
+        window.abrirModalResenas = function(bizcochoId) {
+            currentBizcochoId = bizcochoId;
+            const producto = catalogo.find(p => p.id === bizcochoId);
+            document.getElementById('review-product-name').textContent = `Reseñas de ${producto ? producto.nombre : bizcochoId}`;
+            const filtradas = reviews.filter(r => r.bizcochoId === bizcochoId && r.visible !== false);
+            const lista = document.getElementById('review-list');
+            if (filtradas.length === 0) {
+                lista.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:2rem;">No hay reseñas aún. ¡Sé el primero!</p>';
+            } else {
+                lista.innerHTML = filtradas.map(r => `
+                    <div class="review-item-catalog">
+                        <div class="review-name">${escapeHTML(r.nombre)}</div>
+                        <div class="review-date">${new Date(r.fecha).toLocaleDateString('es-PR', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                        <div class="review-text">${escapeHTML(r.texto)}</div>
+                        ${r.respuesta ? `<div class="review-response"><strong>Respuesta de Azúcar y Migas:</strong> ${escapeHTML(r.respuesta)}</div>` : ''}
+                    </div>
+                `).join('');
             }
+            document.getElementById('review-modal').classList.add('active');
+        };
 
-            function renderizarCatalogo() {
-                const termino = searchInput.value.trim().toLowerCase();
-                const filtrados = termino ? catalogo.filter(p => p.nombre.toLowerCase().includes(termino)) : catalogo;
-                if (filtrados.length === 0) {
-                    catalogGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">🔍 No se encontraron bizcochos.</div>`;
-                    return;
-                }
-                catalogGrid.innerHTML = filtrados.map(prod => {
-                    const img = prod.imagen || (productMeta[prod.id] && productMeta[prod.id].imagen) || null;
-                    const desc = prod.descripcion || (productMeta[prod.id] && productMeta[prod.id].descripcion) || '';
-                    const imagenSrc = img ? `<img src="${escapeHTML(img)}" alt="${escapeHTML(prod.nombre)}" class="card-img" loading="lazy">` : `<span style="font-size:4rem;">${prod.emoji||'🧁'}</span>`;
-                    return `
-                    <div class="card">
-                        <div class="card-img-container">${imagenSrc}</div>
-                        <div class="card-body">
-                            <div class="card-title">${escapeHTML(prod.nombre)}</div>
-                            <div class="card-desc">${escapeHTML(desc)}</div>
-                            <div class="card-sizes">
-                                ${prod.tamanos.map((tam, tIndex) => `
-                                    <button class="size-btn" onclick="agregarAlCarrito('${prod.id}', ${tIndex})">
-                                        <span>${escapeHTML(tam.nombre)}</span>
-                                        <span class="size-price">$${tam.precio.toFixed(2)}</span>
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
+        // ============ CERRAR MODAL DE RESEÑAS ============
+        document.getElementById('review-close').onclick = () => {
+            document.getElementById('review-modal').classList.remove('active');
+        };
+        document.getElementById('review-modal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        // ============ ABRIR MODAL PARA DEJAR RESEÑA ============
+        document.getElementById('btn-leave-review').onclick = () => {
+            document.getElementById('review-modal').classList.remove('active');
+            document.getElementById('leave-review-modal').classList.add('active');
+            // Prellenar nombre si ya existe
+            const savedName = localStorage.getItem('aym_client_name');
+            if (savedName) {
+                document.getElementById('review-nombre').value = savedName;
             }
+        };
 
-            window.agregarAlCarrito = function(prodId, tIndex) {
-                const prod = catalogo.find(p => p.id === prodId);
-                if (!prod) return;
-                const tam = prod.tamanos[tIndex];
-                const itemId = `${prod.id}-${tam.id}`;
-                const existente = carrito.find(i => i.id === itemId);
-                if (existente) existente.cantidad++;
-                else carrito.push({ id: itemId, nombre: prod.nombre, tamano: tam.nombre, precio: tam.precio, cantidad: 1 });
-                actualizarCarrito();
-                mostrarToast('✅ Agregado');
-                fabBadge.classList.remove('pop-anim');
-                void fabBadge.offsetWidth;
-                fabBadge.classList.add('pop-anim');
+        // ============ CERRAR MODAL DE DEJAR RESEÑA ============
+        document.getElementById('leave-review-close').onclick = () => {
+            document.getElementById('leave-review-modal').classList.remove('active');
+        };
+        document.getElementById('leave-review-modal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        // ============ PUBLICAR NUEVA RESEÑA ============
+        document.getElementById('btn-submit-review').onclick = async () => {
+            const nombre = document.getElementById('review-nombre').value.trim();
+            const texto = document.getElementById('review-texto').value.trim();
+
+            if (!nombre) return mostrarToast('Por favor ingresa tu nombre');
+            if (!texto) return mostrarToast('Por favor escribe tu experiencia');
+            if (texto.length < 10) return mostrarToast('Tu reseña debe tener al menos 10 caracteres');
+
+            const nuevaResena = {
+                id: 'rev_' + Date.now(),
+                bizcochoId: currentBizcochoId,
+                nombre: nombre,
+                texto: texto,
+                fecha: new Date().toISOString(),
+                respuesta: '',
+                visible: true
             };
 
-            function actualizarCarrito() {
-                let total = carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
-                document.querySelectorAll('input[name="extra"]:checked').forEach(cb => {
-                    total += parseFloat(cb.dataset.precio || 0);
-                });
-                const totalItems = carrito.reduce((s,i) => s + i.cantidad, 0);
-                fabBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-                fabBadge.textContent = totalItems;
-                cartTotalAmount.textContent = `$${total.toFixed(2)}`;
-                if (carrito.length === 0 && !document.querySelector('input[name="extra"]:checked')) {
-                    cartBody.innerHTML = `<div class="cart-empty"><span style="font-size:3rem;">🧁</span><br>Toca los tamaños para comenzar.</div>`;
-                    cartForm.style.display = 'none';
-                } else {
-                    cartBody.innerHTML = carrito.map((item, i) => `
-                        <div class="cart-item">
-                            <div class="cart-item-info">
-                                <div class="cart-item-name">${escapeHTML(item.nombre)}</div>
-                                <div class="cart-item-detail">${escapeHTML(item.tamano)}</div>
-                            </div>
-                            <div class="cart-item-controls">
-                                <button onclick="disminuirItem(${i})">−</button><span>${item.cantidad}</span><button onclick="aumentarItem(${i})">+</button>
-                            </div>
-                            <div class="cart-item-price">$${(item.precio * item.cantidad).toFixed(2)}</div>
-                            <button class="cart-item-delete" onclick="eliminarItem(${i})">🗑️</button>
-                        </div>
-                    `).join('');
-                    cartForm.style.display = 'block';
-                }
-            }
-
-            document.querySelectorAll('input[name="extra"]').forEach(cb => {
-                cb.onchange = () => actualizarCarrito();
-            });
-
-            window.aumentarItem = i => { carrito[i].cantidad++; actualizarCarrito(); };
-            window.disminuirItem = i => { carrito[i].cantidad > 1 ? carrito[i].cantidad-- : carrito.splice(i,1); actualizarCarrito(); };
-            window.eliminarItem = i => { carrito.splice(i,1); actualizarCarrito(); };
-
-            function abrirCarrito() { cartPanel.classList.add('active'); overlay.classList.add('active'); }
-            function cerrarCarrito() { cartPanel.classList.remove('active'); overlay.classList.remove('active'); }
-            document.getElementById('fab-cart').onclick = () => cartPanel.classList.contains('active') ? cerrarCarrito() : abrirCarrito();
-            overlay.onclick = cerrarCarrito;
-            document.getElementById('cart-close').onclick = cerrarCarrito;
-
-            function mostrarToast(msg) { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
-
-            window.formatearTelefono = function(input) {
-                let v = input.value.replace(/[^0-9]/g,'');
-                if(v.length>3 && v.length<=6) v = v.slice(0,3)+'-'+v.slice(3);
-                else if(v.length>6) v = v.slice(0,3)+'-'+v.slice(3,6)+'-'+v.slice(6,10);
-                input.value = v;
-            };
-
-            // ============ ENVIAR PEDIDO CORREGIDO PARA IPHONE ============
-            document.getElementById('btn-submit-order').onclick = function() {
-                if (!carrito.length && !document.querySelector('input[name="extra"]:checked')) return mostrarToast('Agrega al menos un producto o extra');
-                const nombre = document.getElementById('cliente-nombre').value.trim().substring(0, 20);
-                const tel = document.getElementById('cliente-telefono').value.trim();
-                const fechaRaw = document.getElementById('fecha-entrega').value;
-                if (!nombre || !tel || !fechaRaw) return mostrarToast('Completa todos los campos obligatorios');
-
-                /* Conversión segura de YYYY-MM-DD a DD/MM/YYYY sin usar 'new Date()' para evitar bugs en iPhone */
-                let fecha = fechaRaw;
-                if (fechaRaw.includes('-')) {
-                    const partes = fechaRaw.split('-');
-                    if (partes.length === 3) fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
-                }
-
-                const metodoPago = document.querySelector('input[name="pago"]:checked')?.value || 'No especificado';
-                let total = carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
-                let extrasSeleccionados = [];
-                document.querySelectorAll('input[name="extra"]:checked').forEach(cb => {
-                    extrasSeleccionados.push({ nombre: cb.value, precio: parseFloat(cb.dataset.precio) });
-                    total += parseFloat(cb.dataset.precio);
-                });
-                const dedicatoria = document.getElementById('cart-dedicatoria').value.trim();
-
-                const orden = {
-                    id: 'ord_'+Date.now(),
-                    cliente: {nombre, telefono: tel},
-                    fechaEntrega: fecha,
-                    estado:'pendiente',
-                    productos: carrito.map(i => ({...i})),
-                    extras: extrasSeleccionados,
-                    dedicatoria,
-                    total
-                };
-
-                let mensaje = `🧁 *Azúcar y Migas* - Nuevo Pedido 🧁\n\n👤 ${nombre}\n📞 ${tel}\n📅 ${fecha}\n`;
-                if(metodoPago) mensaje += `💵 Pago: ${metodoPago}\n`;
-                mensaje += `\n📝 *Productos:*\n`;
-                carrito.forEach(i => mensaje += `▪️ ${i.cantidad}x ${i.nombre} (${i.tamano}) - $${(i.precio*i.cantidad).toFixed(2)}\n`);
-                if(extrasSeleccionados.length) {
-                    mensaje += `\n🎁 *Complementos:*\n`;
-                    extrasSeleccionados.forEach(e => mensaje += `▪️ Extra: ${e.nombre} ($${e.precio.toFixed(2)})\n`);
-                }
-                if(dedicatoria) mensaje += `\n✍️ *Dedicatoria:* ${dedicatoria}\n`;
-                mensaje += `\n💰 Total: $${total.toFixed(2)}\n\n✨ *Estado:* Pendiente de confirmación\n📱 _Pedido enviado desde el catálogo web_`;
-
-                // 1. Abrir WhatsApp inmediatamente (evita bloqueo en iOS)
-                window.open('https://wa.me/' + NEGOCIO_WHATSAPP + '?text=' + encodeURIComponent(mensaje), '_blank');
-
-                // 2. Guardar en Firebase en segundo plano
+            try {
                 if (firebaseReady && window.db) {
-                    const { doc, updateDoc, arrayUnion, setDoc } = window.firebaseModules;
+                    const { doc, arrayUnion, updateDoc, setDoc } = window.firebaseModules;
                     const docRef = doc(window.db, "configuracion", "estado_pos");
-                    updateDoc(docRef, { ordenes: arrayUnion(orden) }).catch(() => {
-                        setDoc(docRef, { ordenes: [orden] }).catch(() => {});
+                    await updateDoc(docRef, {
+                        reviews: arrayUnion(nuevaResena)
+                    }).catch(async () => {
+                        // Si falla porque el documento no existe o no tiene el campo reviews
+                        await setDoc(docRef, { reviews: [nuevaResena] }, { merge: true });
                     });
                 }
 
+                // Guardar nombre localmente
                 localStorage.setItem('aym_client_name', nombre);
-                localStorage.setItem('aym_client_tel', tel);
 
-                document.getElementById('confirm-title').textContent = '✅ ¡Pedido enviado!';
-                document.getElementById('confirm-msg').textContent = 'Te contactaremos pronto.';
-                confirmOverlay.classList.add('active');
-                carrito = []; actualizarCarrito();
-                document.getElementById('cart-dedicatoria').value = '';
-                cerrarCarrito();
-            };
+                mostrarToast('✅ ¡Reseña publicada! Gracias por tu opinión.');
 
-            document.getElementById('confirm-ok').onclick = () => confirmOverlay.classList.remove('active');
-            document.getElementById('btn-clear-cart').onclick = () => {
-                carrito = [];
-                document.getElementById('cart-dedicatoria').value = '';
-                document.querySelectorAll('input[name="extra"]').forEach(cb => cb.checked = false);
-                actualizarCarrito();
-            };
+                // Limpiar formulario
+                document.getElementById('review-nombre').value = '';
+                document.getElementById('review-texto').value = '';
 
-            window.addEventListener('firebase-ready', () => {
-                firebaseReady = true;
-                const { doc, getDoc, onSnapshot } = window.firebaseModules;
-                const docRef = doc(window.db, "configuracion", "estado_pos");
-                getDoc(docRef).then(snap => {
-                    if (snap.exists() && snap.data().catalogoPOS) {
-                        catalogo = snap.data().catalogoPOS.map(p => ({ ...p, ...productMeta[p.id] }));
-                    }
-                    renderizarCatalogo();
-                });
-                onSnapshot(docRef, snap => {
-                    if (snap.exists() && snap.data().catalogoPOS) {
-                        catalogo = snap.data().catalogoPOS.map(p => ({ ...p, ...productMeta[p.id] }));
-                        renderizarCatalogo();
-                    }
-                });
+                // Cerrar modal
+                document.getElementById('leave-review-modal').classList.remove('active');
+
+                // Recargar reviews localmente (se actualizará con el listener de Firebase)
+                if (currentBizcochoId) {
+                    // Pequeño delay para dar tiempo a Firebase
+                    setTimeout(() => {
+                        abrirModalResenas(currentBizcochoId);
+                    }, 500);
+                }
+
+            } catch (e) {
+                console.error('Error al publicar reseña:', e);
+                mostrarToast('Error al publicar. Intenta de nuevo.');
+            }
+        };
+
+        // ============ TECLA ESCAPE PARA CERRAR MODALES ============
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('review-modal').classList.remove('active');
+                document.getElementById('leave-review-modal').classList.remove('active');
+            }
+        });
+
+        // ============ SINCRONIZACIÓN FIREBASE ============
+        window.addEventListener('firebase-ready', () => {
+            firebaseReady = true;
+            const { doc, getDoc, onSnapshot } = window.firebaseModules;
+            const docRef = doc(window.db, "configuracion", "estado_pos");
+
+            // Carga inicial
+            getDoc(docRef).then(snap => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.catalogoPOS) catalogo = data.catalogoPOS;
+                    catalogoExtras = data.extrasConfig || [];
+                    reviews = data.reviews || [];
+                }
+                renderizarExtras();
+                renderizarCatalogo();
+                actualizarBotonesResenas();
             });
 
-            /* Cálculo de 48h 100% seguro para iOS (Tiempo Local) */
-            let fechaMin = new Date();
-            fechaMin.setDate(fechaMin.getDate() + 2);
-            let anio = fechaMin.getFullYear();
-            let mes = String(fechaMin.getMonth() + 1).padStart(2, '0');
-            let dia = String(fechaMin.getDate()).padStart(2, '0');
-            document.getElementById('fecha-entrega').min = `${anio}-${mes}-${dia}`;
+            // Escuchar cambios en tiempo real
+            onSnapshot(docRef, (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.catalogoPOS) catalogo = data.catalogoPOS;
+                    catalogoExtras = data.extrasConfig || [];
+                    reviews = data.reviews || [];
+                    renderizarExtras();
+                    renderizarCatalogo();
+                    actualizarBotonesResenas();
 
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-
-            window.addEventListener('scroll', () => {
-                if (document.activeElement === searchInput) {
-                    searchInput.blur();
+                    // Si el modal de reseñas está abierto, refrescar su contenido
+                    const reviewModal = document.getElementById('review-modal');
+                    if (reviewModal.classList.contains('active') && currentBizcochoId) {
+                        abrirModalResenas(currentBizcochoId);
+                    }
                 }
-            }, { passive: true });
+            });
+        });
 
-            renderizarCatalogo();
-        })();
+        // ============ SI FIREBASE YA ESTÁ LISTO (POR SI ACASO) ============
+        if (window.db && window.firebaseModules) {
+            // Disparar manualmente si ya está todo listo
+            window.dispatchEvent(new Event('firebase-ready'));
+        }
+
+        // ============ CÁLCULO DE FECHA MÍNIMA (48 HORAS) ============
+        let fechaMin = new Date();
+        fechaMin.setDate(fechaMin.getDate() + 2);
+        let anio = fechaMin.getFullYear();
+        let mes = String(fechaMin.getMonth() + 1).padStart(2, '0');
+        let dia = String(fechaMin.getDate()).padStart(2, '0');
+        document.getElementById('fecha-entrega').min = `${anio}-${mes}-${dia}`;
+
+        // ============ AÑO ACTUAL EN EL FOOTER ============
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // ============ OCULTAR TECLADO AL HACER SCROLL ============
+        window.addEventListener('scroll', () => {
+            if (document.activeElement === searchInput) {
+                searchInput.blur();
+            }
+        }, { passive: true });
+
+        // ============ RENDERIZAR CATÁLOGO INICIAL ============
+        renderizarCatalogo();
+        renderizarExtras();
+    })();
     </script>
 </body>
 </html>
+    
